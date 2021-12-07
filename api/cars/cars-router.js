@@ -2,6 +2,13 @@ const router = require('express').Router()
 
 const Cars = require('./cars-model')
 
+const {
+  checkCarId,
+  checkCarPayload,
+  checkVinNumberValid,
+  checkVinNumberUnique,
+} = require('./cars-middleware')
+
 // - [GET] /api/cars returns an array of cars sorted by id (or an empty array if there aren't any)
 router.get('/', async (req, res, next) => {
   try {
@@ -13,7 +20,7 @@ router.get('/', async (req, res, next) => {
 })
 
 // - [GET] /api/cars/:id returns a car by the given id
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', checkCarId, async (req, res, next) => {
   try {
     const car = await Cars.getById(req.params.id)
     res.json(car)
