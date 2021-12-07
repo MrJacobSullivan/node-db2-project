@@ -30,14 +30,18 @@ router.get('/:id', checkCarId, async (req, res, next) => {
 })
 
 // - [POST] /api/cars returns the created car
-router.post('/', async (req, res, next) => {
-  try {
-    const car = await Cars.create(req.body)
-    res.json(car)
-  } catch (err) {
-    next(err)
+router.post(
+  '/',
+  [checkCarPayload, checkVinNumberValid, checkVinNumberUnique],
+  async (req, res, next) => {
+    try {
+      const newCar = await Cars.create(req.car)
+      res.json(newCar)
+    } catch (err) {
+      next(err)
+    }
   }
-})
+)
 
 // eslint-disable-next-line
 router.use((err, req, res, next) => {
