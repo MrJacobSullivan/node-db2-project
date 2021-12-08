@@ -23,7 +23,7 @@ const checkCarPayload = (req, res, next) => {
     next({ status: 400, message: 'make is missing' })
   } else if (typeof model !== 'string' || make.length === 0) {
     next({ status: 400, message: 'model is missing' })
-  } else if (typeof mileage !== 'number' || mileage < 0) {
+  } else if (mileage < 0 || typeof mileage !== 'number') {
     next({ status: 400, message: 'mileage is missing' })
   } else {
     req.car = {
@@ -45,19 +45,24 @@ const checkVinNumberValid = (req, res, next) => {
   } else if (!vinValidator.validate(vin)) {
     next({ status: 400, message: `vin ${vin} is invalid` })
   } else {
-    req.car.vin = req.params.vin
+    req.car.vin = req.body.vin
     next()
   }
 }
 
 const checkVinNumberUnique = async (req, res, next) => {
-  const cars = await Cars.getAll()
   const { vin } = req.car
 
-  if (cars.contains((car) => car.vin === vin)) {
-    next({ status: 400, message: `vin ${vin} already exists` })
-  } else {
-    next()
+  try {
+    const cars = await Cars.getAll()
+
+    if (cars.filter((car) => car.vin === vin).length) {
+      next({ status: 400, message: `vin ${vin} already exists` })
+    } else {
+      next()
+    }
+  } catch (err) {
+    next(err)
   }
 }
 

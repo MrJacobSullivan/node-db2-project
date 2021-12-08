@@ -1,15 +1,12 @@
 exports.up = async (knex) => {
   await knex.schema.createTable('cars', (table) => {
-    table.increments('car_id')
-    table
-      .text('vin', 128) // sqlite does not enforce the char limit
-      .unique()
-      .notNullable()
-    table.text('make').notNullable()
-    table.text('model').notNullable()
-    table.decimal('mileage').notNullable()
-    table.text('title').defaultTo('')
-    table.text('transmission').defaultTo('')
+    table.increments('id')
+    table.text('vin', 17).unique()
+    table.text('make', 128).notNullable()
+    table.text('model', 128).notNullable()
+    table.decimal('mileage').unsigned()
+    table.text('title', 128)
+    table.text('transmission', 128)
   })
 }
 

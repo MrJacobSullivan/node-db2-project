@@ -5,7 +5,7 @@ const getAll = async () => {
 }
 
 const getById = async (id) => {
-  return await db('cars').select().where('car_id', id).first()
+  return await db('cars').select().where('id', id).first()
 }
 
 const create = async (car) => {
